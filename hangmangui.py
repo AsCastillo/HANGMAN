@@ -116,12 +116,10 @@ class HangmanGUI:
         self.word.set(self.hangman.get_word_completion())
         self.result.set(result)
         
+        self.update_image()
         self.main_window.update()
         
         self.is_end()
-        
-        self.update_image()
-        self.main_window.update()
     
     def update_image(self):
         self.image = PhotoImage(file=h_picture[self.hangman.tries])
@@ -135,6 +133,8 @@ class HangmanGUI:
                 self.hangman = Hangman()
                 self.word.set(self.hangman.get_word_completion())
                 self.result.set("")
+                self.update_image()
+                self.main_window.update()
             else:
                 self.main_window.destroy()
         if (self.hangman.tries == 0):
@@ -143,6 +143,8 @@ class HangmanGUI:
                 self.hangman = Hangman()
                 self.word.set(self.hangman.get_word_completion())
                 self.result.set("")
+                self.update_image()
+                self.main_window.update()
             else:
                 self.main_window.destroy()
     
