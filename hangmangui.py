@@ -1,6 +1,9 @@
 from tkinter import *
+from tkinter import messagebox
 import random
 from words import word_list
+
+h_picture = ['./assets/h7.png','./assets/h6.png','./assets/h5.png', './assets/h4.png','./assets/h3.png','./assets/h2.png','./assets/h1.png']
 
 class Hangman:
     def __init__(self):
@@ -40,8 +43,10 @@ class Hangman:
             else:
                 self.guessed_letters.append(guess)
                 self.set_word_completion(guess)
+                if self.guessed == True:
+                    return "Congrats, you guessed the State! Maybe you should be President!"
                 return "Good job, " + guess + " is in the State!"
-        elif len(guess) == len(self.word) and guess.isalpha():
+        elif len(guess) >= len(self.word):
             if guess in self.guessed_words:
                 return "You already guessed the State" + guess
             elif guess != self.word:
@@ -50,8 +55,8 @@ class Hangman:
                 return "" + guess + " is not the State."
             else:
                 self.guessed = True
-                self.word_completion = self.word
-                return
+                self.__word_completion = self.word
+                return "Congrats, you guessed the State! Maybe you should be President!"
         else:
             return ("Not a valid guess.")
 
@@ -70,6 +75,10 @@ class HangmanGUI:
         
         # Add hangman image
         
+        self.image = PhotoImage(file=h_picture[self.hangman.tries])
+        self.image_label = Label(self.top_frame, image=self.image)
+        self.image_label.pack(side='left')
+    
         self.word = StringVar()
         self.word.set(self.hangman.get_word_completion())
         self.word_label = Label(self.mid_frame, textvariable=self.word)
@@ -101,15 +110,41 @@ class HangmanGUI:
         
     def play(self):
         guess = str(self.entry.get()).upper()
+        self.entry.delete(0, len(guess))
         result = self.hangman.play(guess)
         
         self.word.set(self.hangman.get_word_completion())
-        
-        if self.hangman.guessed == True:
-            result = "Congrats, you guessed the State! Maybe you should be President!"
-            # Add play again
-            
         self.result.set(result)
+        
+        self.main_window.update()
+        
+        self.is_end()
+        
+        self.update_image()
+        self.main_window.update()
+    
+    def update_image(self):
+        self.image = PhotoImage(file=h_picture[self.hangman.tries])
+        self.image_label.configure(image=self.image)
+        self.image_label.image = self.image
+
+    def is_end(self):
+        if (self.hangman.guessed == True):
+            res = messagebox.askyesno("WIN", "Congrats, you guessed the State! Maybe you should be President! Want to play again ?")
+            if (res == True):
+                self.hangman = Hangman()
+                self.word.set(self.hangman.get_word_completion())
+                self.result.set("")
+            else:
+                self.main_window.destroy()
+        if (self.hangman.tries == 0):
+            res = messagebox.askyesno("LOSE", "Sorry, you ran out of tries. The State was " + self.hangman.word + ". Maybe next time! Want to play again ?")
+            if (res == True):
+                self.hangman = Hangman()
+                self.word.set(self.hangman.get_word_completion())
+                self.result.set("")
+            else:
+                self.main_window.destroy()
     
 if __name__ == "__main__":
     handman = HangmanGUI()
