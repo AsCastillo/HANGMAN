@@ -48,7 +48,7 @@ class Hangman:
                 return "Good job, " + guess + " is in the State!"
         elif len(guess) >= len(self.word):
             if guess in self.guessed_words:
-                return "You already guessed the State" + guess
+                return "You already guessed the State " + guess
             elif guess != self.word:
                 self.tries -= 1
                 self.guessed_words.append(guess)
