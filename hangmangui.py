@@ -5,31 +5,31 @@ from words import word_list
 
 h_picture = ['./assets/h7.png','./assets/h6.png','./assets/h5.png', './assets/h4.png','./assets/h3.png','./assets/h2.png','./assets/h1.png']
 
+def get_word():
+    word = random.choice(word_list)
+    return word.upper()
+    
 class Hangman:
-    def __init__(self):
-        self.word = self.get_word()
+    def __init__(self, state):
+        self.word = state
         print(self.word)
-        self.__word_completion = "_" * len(self.word)
+        self.word_completion = "_" * len(self.word)
         self.guessed = False
         self.guessed_letters = []
         self.guessed_words = []
         self.tries = 6
-
-    def get_word(self):
-        word = random.choice(word_list)
-        return word.upper()
     
     def set_word_completion(self, guess):
-        word_as_list = list(self.__word_completion)
+        word_as_list = list(self.word_completion)
         indices = [i for i, letter in enumerate(self.word) if letter == guess]
         for index in indices:
             word_as_list[index] = guess
-        self.__word_completion = "".join(word_as_list)
-        if "_" not in self.__word_completion:
+        self.word_completion = "".join(word_as_list)
+        if "_" not in self.word_completion:
             self.guessed = True
     
     def get_word_completion(self):
-        word_completion = " ".join(self.__word_completion)
+        word_completion = " ".join(self.word_completion)
         return word_completion
     
     def play(self, guess):
@@ -55,14 +55,15 @@ class Hangman:
                 return "" + guess + " is not the State."
             else:
                 self.guessed = True
-                self.__word_completion = self.word
+                self.word_completion = self.word
                 return "Congrats, you guessed the State! Maybe you should be President!"
         else:
             return ("Not a valid guess.")
 
 class HangmanGUI:
     def __init__(self):
-        self.hangman = Hangman()
+        
+        self.hangman = Hangman(get_word())
         
         self.main_window = Tk()
         self.main_window.title('Hangman')
@@ -130,7 +131,7 @@ class HangmanGUI:
         if (self.hangman.guessed == True):
             res = messagebox.askyesno("WIN", "Congrats, you guessed the State! Maybe you should be President! Want to play again ?")
             if (res == True):
-                self.hangman = Hangman()
+                self.hangman = Hangman(get_word())
                 self.word.set(self.hangman.get_word_completion())
                 self.result.set("")
                 self.update_image()
